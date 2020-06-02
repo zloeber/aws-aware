@@ -1,6 +1,6 @@
 appname: ''
 awsid: ''
-awsprofile: ''
+awsprofile: default
 awsregion: us-east-1
 awssecret: ''
 costcenter: ''
@@ -8,10 +8,10 @@ datapath: /tmp/instance_data.yml
 emailexceptions: false
 emailexceptionsrecipient: ''
 emailexceptionssender: ScriptException@locahost
-emailrecipients: ''
+emailrecipients: consultant@mycompany.com
 emailsmtpserver: localhost
-emailsmtpserverport: 2525
-emailstatussender: AWS-Aware Bot (Prod)
+emailsmtpserverport: 25
+emailstatussender: AWS-Aware Bot
 emailstatussenderaddress: Aws-aware-bot@localhost
 emailtemplatepath: config/templates
 environment: ''
@@ -20,7 +20,6 @@ logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
 loggingenabled: false
 loglevel: INFO
 logpath: logs/
-monitorconfig: config/default-monitors.yml
 slack_notifications: false
-slack_webhooks: ''
+slack_webhooks: []
 suppressconsoleoutput: false

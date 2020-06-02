@@ -517,7 +517,7 @@ class MonitorTasks(object):
     def send_slack_notification(self, force=False):
         """Send a slack notification"""
         if force or self.should_send_warning() or self.should_send_alert():
-            if CFG.values.has_key('slack_webhooks') and CFG.values.has_key('slack_notifications'):
+            if ('slack_webhooks' in CFG.values) and ('slack_notifications' in CFG.values):
                 if CFG.values['slack_webhooks'] and CFG.values['slack_notifications']:
                     slk = SlackPoster(CFG.values['slack_webhooks'])
                     slackmessage = self.get_slackmessage()
@@ -672,7 +672,7 @@ class MonitorTasks(object):
         for instance in self.instances:
             iname = str(instance['instance_type'])
             if (iname not in knowns) and (iname != 'other'):
-                if not unknowns.has_key(iname):
+                if not iname in unknowns:
                     unknowns[iname] = False
         return unknowns.keys()
 
@@ -694,8 +694,8 @@ class MonitorTasks(object):
             instances=self.get_instances()
 
         for thisinst in instances:
-            if thisinst.has_key(attribute):
-                if not found_attribs.has_key(str(thisinst[attribute])):
+            if attribute in thisinst:
+                if not str(thisinst[attribute]) in found_attribs:
                     found_attribs[str(thisinst[attribute])] = False
 
         return found_attribs.keys()
@@ -705,7 +705,7 @@ class MonitorTasks(object):
         knowns = {}
         for monitor in self.monitorjobs:
             if str(monitor['name']).lower() != 'Other':
-                if (str(monitor['thresholdtype']).lower() == 'instance') and (not knowns.has_key(str(monitor['name']))):
+                if (str(monitor['thresholdtype']).lower() == 'instance') and (not str(monitor['name'] in knowns)):
                     knowns[str(monitor['name'])] = False
         return knowns.keys()
 

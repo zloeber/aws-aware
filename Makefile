@@ -173,6 +173,14 @@ app/config/smtp: ## Updates smtp config (example task)
 	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) config change emailsmtpserver localhost
 	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) config change emailsmtpserverport 2525
 
+.PHONY: app/config/show
+app/config/show: ## Show current app configuration
+	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) config show
+
+.PHONY: app/config/export
+app/config/export: ## Show current app configuration as code for recreation later
+	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) config export
+
 .PHONY: app/run
 app/run: ## Run $(PACKAGE_EXE) and send any notifications
 	$(PACKAGE_EXE) -configfile "$(APP_CONFIG_PATH)" run -sendalerts -sendwarnings -force monitors
@@ -184,10 +192,6 @@ app/run/export: ## Run $(PACKAGE_EXE) instance export for debugging
 .PHONY: app/run/report
 app/run/report: ## Run $(PACKAGE_EXE) instance export for debugging
 	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) run report -filteredinstances
-
-.PHONY: app/show/config
-app/show/config: ## Show current app configuration file
-	$(PACKAGE_EXE) -configfile $(APP_CONFIG_PATH) config show
 
 .PHONY: docker/image
 docker/image: ## build docker image

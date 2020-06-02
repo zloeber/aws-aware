@@ -1,26 +1,22 @@
-appname: ''
 awsid: ''
 awsprofile: ''
 awsregion: us-east-1
 awssecret: ''
-costcenter: ''
-datapath: /tmp/instance_data.yml
+datapath: /home/zloeber/Projects/Personal/aws-aware/aws_aware/config/instance_data.yml
 emailexceptions: false
 emailexceptionsrecipient: ''
 emailexceptionssender: ScriptException@locahost
 emailrecipients: ''
 emailsmtpserver: localhost
-emailsmtpserverport: 2525
-emailstatussender: AWS-Aware Bot (Prod)
+emailsmtpserverport: 25
+emailstatussender: AWS-Aware Bot
 emailstatussenderaddress: Aws-aware-bot@localhost
 emailtemplatepath: config/templates
-environment: ''
 logfile: runtime.log
 logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
 loggingenabled: false
 loglevel: INFO
 logpath: logs/
-monitorconfig: config/default-monitors.yml
 slack_notifications: false
-slack_webhooks: ''
+slack_webhooks: []
 suppressconsoleoutput: false

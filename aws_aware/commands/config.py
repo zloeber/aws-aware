@@ -46,7 +46,7 @@ def get(element):
     """
     Show a single configuration element.
     """
-    if CFG.values.has_key(element):
+    if element in CFG.values:
         OUTPUT.configelement(name=element, value=CFG.values[element])
 
 
@@ -59,7 +59,7 @@ def change(whatif, element, value):
     """
     Set script configuration elements. These are saved for future script runs.
     """
-    if CFG.values.has_key(element):
+    if element in CFG.values:
         if whatif:
             OUTPUT.info('Would have updated {0} to {1}'.format(CFG.values[element], value))
         else:

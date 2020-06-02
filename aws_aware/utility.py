@@ -315,7 +315,7 @@ class Utility(object):
                             # Price not available
                             continue
 
-                        if not result['models'][libcloud_region_name].has_key(size['size']):
+                        if not size['size'] in result['models'][libcloud_region_name]:
                             result['models'][libcloud_region_name][size['size']] = {}
                             result['models'][libcloud_region_name][size['size']]['CPU'] = int(size['vCPU'])
 

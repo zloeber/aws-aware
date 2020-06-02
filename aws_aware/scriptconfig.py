@@ -120,14 +120,13 @@ class CustomConfig(figgypy.Config):
                     name='configfile',
                     path=__file__,
                 )
-
         if configtype == 'yaml' or configtype == 'yml':
-            # with open(filename, 'w') as outfile:
-            # No data passed in, so dumping our own dictionary instead
-            if configdata is None:
-                yaml.safe_dump(self.values, file(filename, 'wb'), encoding='utf-8', allow_unicode=True, default_flow_style=False)
-            else:
-                yaml.safe_dump(configdata, file(filename, 'wb'), encoding='utf-8', allow_unicode=True, default_flow_style=False)
+            with open(filename, 'wb') as outfile:
+                # No data passed in, so dumping our own dictionary instead
+                if configdata is None:
+                    yaml.safe_dump(self.values, outfile, encoding='utf-8', allow_unicode=True, default_flow_style=False)
+                else:
+                    yaml.safe_dump(configdata, outfile, encoding='utf-8', allow_unicode=True, default_flow_style=False)
 
     def save(self):
         """Save config to a file"""

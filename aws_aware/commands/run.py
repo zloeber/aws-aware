@@ -39,7 +39,7 @@ def run(ctx, awsprofile=None, awsid=None, awsregion=None, emailrecipients=None, 
         # Did we get an empty (unpassed) run argument?
         if RUN_ARGS[key] is None:
             # Do we have the same argument in CFG?
-            if CFG.values.has_key(key):
+            if key in CFG.values:
                 # Does it have a value? Great, lets use it
                 if CFG.values[key] is not None:
                     RUN_ARGS[key] = CFG.values[key]

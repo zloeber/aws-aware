@@ -61,21 +61,21 @@ Calling the script in a virtual environment may prevent the script from being ab
 
 ## Initialization
 
-Easy! Update deploy.env then run either of these commands (depending if you are using a custom .env file or not):
+Easy! Copy `./config/deploy.env` to `./config/team1.env` then initialize a new aws-aware configuration file:
 
 ```bash
-make dpl="team1-prod.env" run-app-config
+make app/config/init dpl=./config/team1.env
 ```
-After running this you will end up with a configuration file that you defined that can then be used moving forward (is also able to be upgraded if the app upgrades).
+After running this you will end up with a configuration file that you defined in `./config/team1-config.yml` as well as a `./config/team1-monitor.yml` config. Both can then be used moving forward to generate alerts for team1 (these config files are also able to be upgraded if the app upgrades for any reason).
 
 You can then run other make tasks using the same configuration file:
 
 ```bash
 # Run an instance debug export based on the previously created config file
-make dpl="team1-prod.env" run-app-export
+make app/config/show dpl=team1.env
 ```
 
-> **NOTE:** aws-aware supports exporting configuration to self-updating configuration as code!
+> **NOTE:** aws-aware supports exporting configuration to self-updating configuration as code! `make app/config/export dpl=team1.env`
 
 ## Upgrade
 
