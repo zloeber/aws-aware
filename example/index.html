@@ -1,0 +1,360 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<!doctype html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>AWS Aware Status - Normal</title>
+    <link href="https://unpkg.com/tabulator-tables@4.0.5/dist/css/tabulator.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.5/jspdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/2.3.2/jspdf.plugin.autotable.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.0.5/dist/js/tabulator.min.js"></script>
+    <style type="text/css">
+        #outlook a {
+            padding: 0;
+        }
+        body {
+            width: 100% !important;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        /* force default font sizes */
+        .ExternalClass {
+            width: 100%;
+        }
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+            line-height: 100%;
+        }
+
+        /* Hotmail */
+        table td {
+            border-collapse: collapse;
+        }
+        @media only screen and (min-width: 600px) {
+            .maxW {
+                width: 600px !important;
+            }
+        }
+        .dropbtn {
+            background-color: #3498DB;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropbtn:hover, .dropbtn:focus {
+            background-color: #2980B9;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            overflow: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown a:hover {background-color: #ddd;}
+
+        .show {display: block;}
+    </style>
+</head>
+
+<body style="margin: 0px; padding: 0px; -webkit-text-size-adjust:none; -ms-text-size-adjust:none;" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" bgcolor="#FFFFFF">
+<table bgcolor="#CCCCCC" width="100%" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+            <td valign="top">
+                <!--[if (gte mso 9)|(IE)]>
+    <table width="600" align="center" cellpadding="0" cellspacing="0" border="0"><tr><td valign="top">
+    <![endif]-->
+                <table width="100%" class="maxW" style="max-width: 600px; margin: auto;" border="0" align="center" cellpadding="0" cellspacing="0">
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
+                        <tr>
+                            <td align="left" valign="middle" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 24px; color: #353535; padding:3%; padding-top:40px; padding-bottom:40px;">
+                                AWS Aware Status - Normal - 11/30/2018
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <table width="94%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="33.3%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-right:0; font-weight: bold;">
+                                            Environment
+                                        </td>
+                                        <td width="33.3%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                            Application
+                                        </td>
+                                        <td width="33.3%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                            Cost Center
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td width="33.3%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">
+                                            *
+                                        </td>
+                                        <td width="33.3%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">
+                                            *
+                                        </td>
+                                        <td width="33.3%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">
+                                            *
+                                        </td>
+                                    </tr>
+                                    <tr><td></td></tr>
+                                    <table width="94%" border="0" cellpadding="0" cellspacing="0">
+                                    
+        
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+                <div id="instance-summary"></div>
+                <script>
+                //Custom filter example
+                function customFilter(data){
+                    return data.car && data.rating < 3;
+                }
+
+                //Trigger setFilter function with correct parameters
+                function updateFilter(){
+
+                    var filter = $("#filter-field").val() == "function" ? customFilter : $("#filter-field").val();
+
+                    if($("#filter-field").val() == "function" ){
+                        $("#filter-type").prop("disabled", true);
+                        $("#filter-value").prop("disabled", true);
+                    }else{
+                        $("#filter-type").prop("disabled", false);
+                        $("#filter-value").prop("disabled", false);
+                    }
+
+                    table.setFilter(filter, $("#filter-type").val(), $("#filter-value").val());
+                }
+
+                //Update filters on value change
+                $("#filter-field, #filter-type").change(updateFilter);
+                $("#filter-value").keyup(updateFilter);
+
+                //Clear filters on "Clear Filters" button click
+                $("#filter-clear").click(function(){
+                    $("#filter-field").val("");
+                    $("#filter-type").val("=");
+                    $("#filter-value").val("");
+
+                    table.clearFilter();
+                });
+                    // Instance summary data
+                    var tablesummarydata = [ 
+                        {name:"c5.4xlarge",count:"4",class:"c-class"}, 
+                        {name:"r3.4xlarge",count:"26",class:"r-class"}, 
+                        {name:"t2.large",count:"6",class:"t-class"}, 
+                        {name:"r4.large",count:"21",class:"r-class"}, 
+                        {name:"i3.2xlarge",count:"4",class:"i-class"}, 
+                        {name:"r3.2xlarge",count:"58",class:"r-class"}, 
+                        {name:"r4.4xlarge",count:"23",class:"r-class"}, 
+                        {name:"i3.xlarge",count:"11",class:"i-class"}, 
+                        {name:"r4.2xlarge",count:"47",class:"r-class"}, 
+                        {name:"c4.8xlarge",count:"1",class:"c-class"}, 
+                        {name:"r4.8xlarge",count:"12",class:"r-class"}, 
+                        {name:"t2.2xlarge",count:"1",class:"t-class"}, 
+                        {name:"c3.4xlarge",count:"1",class:"c-class"}, 
+                        {name:"m4.large",count:"24",class:"m-class"}, 
+                        {name:"m5.2xlarge",count:"4",class:"m-class"}, 
+                        {name:"t2.medium",count:"11",class:"t-class"}, 
+                        {name:"t2.nano",count:"9",class:"t-class"}, 
+                        {name:"c5.large",count:"14",class:"c-class"}, 
+                        {name:"d2.4xlarge",count:"166",class:"d-class"}, 
+                        {name:"c5.2xlarge",count:"13",class:"c-class"}, 
+                        {name:"c4.4xlarge",count:"1",class:"c-class"}, 
+                        {name:"m5.large",count:"5",class:"m-class"}, 
+                        {name:"t2.micro",count:"8",class:"t-class"}, 
+                        {name:"m5.xlarge",count:"27",class:"m-class"}, 
+                        {name:"m5.4xlarge",count:"2",class:"m-class"}, 
+                        {name:"c4.xlarge",count:"7",class:"c-class"}, 
+                        {name:"m4.xlarge",count:"11",class:"m-class"}, 
+                        {name:"c4.2xlarge",count:"2",class:"c-class"}, 
+                        {name:"c5.xlarge",count:"14",class:"c-class"}, 
+                        {name:"t2.small",count:"36",class:"t-class"}, 
+                        {name:"r4.xlarge",count:"3",class:"r-class"}, 
+                        {name:"r3.large",count:"1",class:"r-class"}, 
+                        {name:"i2.xlarge",count:"10",class:"i-class"}, 
+                        {name:"m3.medium",count:"6",class:"m-class"}, 
+                        {name:"r3.xlarge",count:"22",class:"r-class"}, 
+                        {name:"c4.large",count:"40",class:"c-class"}, 
+                        {name:"m4.2xlarge",count:"7",class:"m-class"}, 
+                        {name:"i3.8xlarge",count:"24",class:"i-class"}, 
+                        {name:"r3.8xlarge",count:"67",class:"r-class"}, 
+                        {name:"i3.4xlarge",count:"31",class:"i-class"}, 
+                        {name:"m4.4xlarge",count:"4",class:"m-class"}, 
+                        {name:"m3.xlarge",count:"43",class:"m-class"},
+                    ];
+
+                    var mysummarytable = new Tabulator( "#instance-summary", {
+                        title:"Instance Summary",
+                        height:305,
+                        layout:"fitColumns",
+                        columnVertAlign:"bottom",
+                        pagination:"local",
+                        paginationSize:50,
+                        movableColumns:false,
+                        selectable:true,
+                        responsiveLayout:"collapse",
+                        clipboard:true,
+                        data:tablesummarydata,
+                        groupBy:["class"],
+                        groupStartOpen:[false],
+                        groupToggleElement:"header",
+                        columnCalcs:"top",
+                        columns:[
+                            {
+                                title:"Instance Summary",
+                                columns:[
+                                    {title:"Name", field:"name"},
+                                    {title:"Count", field:"count", topCalc:"sum", bottomCalc:"sum"},
+                                    {title:"Class", field:"class"},
+                                ],
+                            },
+                        ],
+                        initialSort:[
+                            {column:"class", dir:"asc"},
+                            {column:"count", dir:"desc"},
+                        ],
+                    });
+
+                    $("#instance-summary").tabulator();
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+                <div id="instance-details"></div>
+                <script>
+                    // Instance data
+                    var tabledata = [ 
+                        { "ApplicationName":"team2","cluster":"team2-prod-clus-27a","public_ip_address":"None","ProcessName":"PROC1","Cluster-Template-Name":"workers","launch_time":"2018-11-27 20:36:07+00:00","Environment":"PROD","instance_type":"d2.4xlarge","state":"running","CostCenter":"1111111","private_ip_address":"10.236.105.142","id":"i-0fffffffffffffff1","aws:elasticmapreduce:instance-group-role":"None","name":"team2-prod-va-name1",}, 
+                        { "ApplicationName":"team2","cluster":"team2-prod-clus-28e","public_ip_address":"None","ProcessName":"PROC1","Cluster-Template-Name":"workers","launch_time":"2018-11-28 16:36:13+00:00","Environment":"PROD","instance_type":"d2.4xlarge","state":"running","CostCenter":"1111111","private_ip_address":"10.236.107.140","id":"i-0fffffffffffffff2","aws:elasticmapreduce:instance-group-role":"None","name":"team2-prod-va-name2",}, 
+                        { "ApplicationName":"team2","cluster":"team2-prod-clus-01","public_ip_address":"None","ProcessName":"PROC2","Cluster-Template-Name":"workers","launch_time":"2018-11-07 13:46:31+00:00","Environment":"PROD","instance_type":"d2.4xlarge","state":"running","CostCenter":"1111111","private_ip_address":"10.236.81.21","id":"i-0fffffffffffffff3","aws:elasticmapreduce:instance-group-role":"None","name":"team2-prod-dr-name3",}, 
+                        { "ApplicationName":"team2","cluster":"team2-prod-clus-55","public_ip_address":"None","ProcessName":"PROC3","Cluster-Template-Name":"workers","launch_time":"2018-12-01 00:47:27+00:00","Environment":"PROD","instance_type":"i3.4xlarge","state":"running","CostCenter":"1111111","private_ip_address":"10.236.125.7","id":"i-0fffffffffffffff4","aws:elasticmapreduce:instance-group-role":"CORE","name":"team2-prod-rlu-name4",}, 
+                        { "ApplicationName":"team2","cluster":"team2-prod-clus-01","public_ip_address":"None","ProcessName":"PROC2","Cluster-Template-Name":"workers","launch_time":"2018-11-07 13:46:31+00:00","Environment":"PROD","instance_type":"d2.4xlarge","state":"running","CostCenter":"1111111","private_ip_address":"10.236.87.21","id":"i-0fffffffffffffff5","aws:elasticmapreduce:instance-group-role":"CORE","name":"team2-prod-dr-name5",}, 
+                    ];
+
+                    var mytable = new Tabulator( "#instance-details", {
+                        title:"Intance Details",
+                        height:405,
+                        layout:"fitColumns",
+                        columnVertAlign:"bottom",
+                        pagination:"local",
+                        paginationSize:50,
+                        movableColumns:true,
+                        selectable:true,
+                        responsiveLayout:"collapse",
+                        clipboard:true,
+                        data:tabledata,
+                        groupBy:["cluster", "instance_type"],
+                        groupStartOpen:[true, false],
+                        groupToggleElement:"header",
+                        columns:[
+                            {
+                                title:"Instance Details",
+                                columns:[
+                                    
+                                    { title:"App Name", field:"ApplicationName", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Cluster", field:"cluster", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Public IP", field:"public_ip_address", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Process Name", field:"ProcessName", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"CDH Role", field:"Cluster-Template-Name", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Launched", field:"launch_time", headerFilter:"input", align:"center"
+                                    ,sorter:"date"},
+                                    
+                                    { title:"Env", field:"Environment", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Instance Type", field:"instance_type", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"state", field:"state", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Cost Center", field:"CostCenter", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Private IP", field:"private_ip_address", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"id", field:"id", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"EMR Role", field:"aws:elasticmapreduce:instance-group-role", headerFilter:"input", align:"center"
+                                    },
+                                    
+                                    { title:"Name", field:"name", headerFilter:"input", align:"center"
+                                    },
+                                ],
+                            }
+                        ]
+                    });
+                    $("#instance-details").tabulator();
+                </script>
+            </td>
+        </tr>
+        
+        <tr>
+            <td>
+                <br/>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="middle" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #353535; padding:3%; padding-top:10px; padding-bottom:10px;">
+                <br/><span style="font-weight:bold">Additional Information:</span> All filters are based on the assigned instance tags or similar metadata. The filters at the top represent filters against these tags and may not represent all instances if tags are inappropriately assigned within this target environment. (Running instances only.)
+            </td>
+        </tr>
+
+                                    </table>
+                                    <tr><td><br\></td></tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+
+        <!--[if (gte mso 9)|(IE)]>
+        </td></tr></table>
+        <![endif]-->
+</body>
+
+</html>

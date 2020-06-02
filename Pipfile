@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+
+[dev-packages]
+bumpversion = "*"
+wheel = "*"
+watchdog = "*"
+tox = "*"
+coverage = "*"
+PyInstaller = "*"
+Sphinx = "*"
+twine = "*"
+pylint = "*"
+autopep8 = "*"
+pandoc = "*"
+
+[packages]
+click = "*"
+boto3 = "*"
+boto = "*"
+botocore = "*"
+datetime = "*"
+jinja2 = "*"
+emails = "*"
+requests = "*"
+fabric = "<2"
+python-dotenv = "*"
+pyyaml = "*"
+figgypy = "*"
+aws-aware = {editable = true,path = "."}

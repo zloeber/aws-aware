@@ -1,0 +1,25 @@
+# Monitor Configuration File for aws-aware
+view:
+  include_undefined: true
+  instance_tags: ['CostCenter', 'ApplicationName', 'Environment', 'ProcessName', 'Cloudera-Director-Template-Name','aws:elasticmapreduce:instance-group-role']
+  instance_state: ['running']
+  notice_columns: ['cluster', 'ApplicationName', 'ProcessName', 'instance_type']
+  column_lookup:
+    cluster: 'Cluster'
+    instance_type: 'Instance Type'
+    CostCenter: 'Cost Center'
+    ApplicationName: 'App Name'
+    Environment: 'Env'
+    ProcessName: 'Process Name'
+    Cloudera-Director-Template-Name: 'CDH Role'
+    aws:elasticmapreduce:instance-group-role: 'EMR Role'
+    launch_time: 'Launched'
+    public_ip_address: 'Public IP'
+    private_ip_address: 'Private IP'
+    name: 'Name'
+
+filters:
+  appname: '*'
+  costcenter: '*'
+  environment: '*'
+monitors: []

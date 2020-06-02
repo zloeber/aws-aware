@@ -1,0 +1,23 @@
+awsid: ''
+awsprofile: ''
+awsregion: us-east-1
+awssecret: ''
+emailexceptions: false
+emailexceptionsrecipient: ''
+emailexceptionssender: ScriptException@locahost
+emailrecipients: ''
+emailsmtpserver: localhost
+emailstatussender: 'AWS Aware'
+emailstatussenderaddress: aws-aware@localhost
+emailtemplatepath: config\templates
+logfile: runtime.log
+logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
+loggingenabled: false
+loglevel: INFO
+logpath: logs\
+slack_notifications: false
+slack_webhooks: []
+suppressconsoleoutput: false
+environment: ''
+appname: ''
+costcenter: ''

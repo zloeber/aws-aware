@@ -1,0 +1,18 @@
+include AUTHORS.rst
+include CONTRIBUTING.rst
+include HISTORY.rst
+include LICENSE
+include README.rst
+
+recursive-include aws_aware/commands *.*
+recursive-include aws_aware/logs *.*
+recursive-include aws_aware/config *.*
+recursive-include aws_aware/config/templates *.*
+recursive-include tests *
+recursive-include profiles *.*
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude instance-output.yml
+recursive-exclude aws_aware/instance-output.yml
+
+recursive-include docs *.rst conf.py Makefile make.bat *.jpg *.png *.gif

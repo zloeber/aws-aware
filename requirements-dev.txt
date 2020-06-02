@@ -1,0 +1,11 @@
+bumpversion
+wheel
+watchdog
+tox
+coverage
+PyInstaller
+Sphinx
+twine
+pylint
+autopep8
+pandoc

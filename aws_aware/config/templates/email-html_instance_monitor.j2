@@ -1,0 +1,154 @@
+{% extends "email-html_base.j2" %}
+
+{% block content %}
+                            <tr>
+                                <td align="center">
+                                    <table width="94%" border="0" cellpadding="0" cellspacing="0">
+                                    {# Loop trough all enabled monitors #}
+                                    {% for monitor in monitors if monitor['enabled'] %}
+                                        {# if we are in the first iteration of the loop, add the header row #}
+                                        {% if loop.index0 == 0 %}
+                                        <tr>
+                                            <td width="55%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-right:0; font-weight: bold;">
+                                                Type
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                                Warn Thresh.
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                                Alert Thresh.
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                                Current Count
+                                            </td>
+                                        </tr>
+                                        {% endif %}
+                                        <tr>
+                                            <td width="55%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">{{ monitor['name'] }}
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">{{ monitor['warningthreshold'] }}
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0; border: solid 1px gray;">{{ monitor['alertthreshold'] }}
+                                            </td>
+                                            <td width="15%" align="center" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-left:0; border: solid 1px gray;
+                                            {% if (monitor['count'] == 0) %}
+                                                background-color: lightgreen;">
+                                            {% elif (monitor['count'] > monitor['warningthreshold']) and (monitor['count'] <= monitor['alertthreshold']) %}
+                                                background-color: lightyellow;"> 
+                                            {% elif (monitor['count'] > monitor['alertthreshold']) %}
+                                                background-color: lightcoral;"> 
+                                            {% else %} 
+                                                background-color: lightgreen;">
+                                            {% endif %}
+                                            {{ monitor['count'] }}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                            <td align="center">
+                                <table width="94%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="85%" align="right" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-right:0; font-weight: bold;">
+                                            Total  :
+                                        </td>
+                                        <td width="15%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                            {{ instances|length }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            </tr>
+                            <tr><td><br/></td></tr>
+                            <tr>
+                                <td align="left" valign="middle" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #353535; padding:3%; padding-top:10px; padding-bottom:10px;">
+                                    <br/><span style="font-weight:bold">Additional Information:</span> {{ additionalnotes }}
+                                </td>
+                            </tr>
+                            {% if instances|length > 0 %}
+                            <tr>
+                            <td align="center">
+                                <table width="94%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="15%" align="center" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #EEEEEE; padding:10px; padding-left:0; font-weight: bold;">
+                                <div id="instance-details"></div>
+                                <script>
+                                    // Instance data
+                                    var tabledata = [
+                                        {% for instance in instances %} { 
+                                            {% for instance_prop in instance.keys() %}
+                                                {% if instance_prop == 'aws:elasticmapreduce:instance-group-role' %}
+                                                    "EMR Role":"{{ instance[instance_prop] }}",
+                                                {% else %}
+                                                    "{{ instance_prop }}":"{{ instance[instance_prop] }}",
+                                                {% endif %}
+                                            {% endfor %}
+                                            },
+                                        {% endfor %}
+                                    ];
+
+                                    var mytable = new Tabulator( "#instance-details", {
+                                        layout:"fitData",
+                                        columnVertAlign:"bottom",
+                                        pagination:"local",
+                                        paginationSize:100,
+                                        movableColumns:true,
+                                        selectable:true,
+                                        responsiveLayout:"collapse",
+                                        clipboard:true,
+                                        data:tabledata,
+                                        groupBy:["cluster", "instance_type"],
+                                        groupStartOpen:[false, true],
+                                        groupToggleElement:"header",
+                                        columns:[
+                                        {% for instance_prop in instances[0].keys() %}
+                                            {% if instance_prop == 'aws:elasticmapreduce:instance-group-role' %}
+                                                { title:"EMR Role", field:"EMR Role",
+                                            {% else %}
+                                                { title:"{{ instance_prop }}", field:"{{ instance_prop }}",
+                                            {% endif %}
+                                            headerFilter:"input", align:"center"{% if instance_prop == 'launch_time' %},sorter:"date"{% endif %}{% if instance_prop not in ('ApplicationName','cluster','ProcessName','name','instance_type') %},visible:false{% endif %} },
+                                        {% endfor %}
+                                        ],
+                                    });
+
+                                    //select row on "select all" button click
+                                    $("#select-all").click(function(){
+                                        table.selectRow();
+                                    });
+
+                                    //deselect row on "deselect all" button click
+                                    $("#deselect-all").click(function(){
+                                        table.deselectRow();
+                                    });
+
+                                    $("#download-csv").click(function(){
+                                        mytable.download("csv", "aws-instance-report.csv");
+                                    });
+
+                                    $("#download-json").click(function(){
+                                        mytable.download("json", "aws-instance-report.json");
+                                    });
+
+                                    $("#download-xlsx").click(function(){
+                                        mytable.download("xlsx", "aws-instance-report.xlsx", {sheetName:"instances"});
+                                    });
+
+                                    $("#download-pdf").click(function(){
+                                        mytable.download("pdf", "aws-instance-report.pdf", {
+                                            orientation:"portrait",
+                                            title:"AWS Instance Report",
+                                        });
+                                    });
+
+                                    $("#instance-details").tabulator();
+                                </script>
+                                </td>
+                                </tr>
+                            </table>
+                            </td>
+                            </tr>
+                            {% endif %}
+{% endblock %}

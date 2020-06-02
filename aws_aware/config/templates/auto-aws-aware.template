@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+${HOME}/.local/bin/aws-aware -configfile ${APP_CONFIG_PATH} run -sendalerts -sendwarnings -force tests

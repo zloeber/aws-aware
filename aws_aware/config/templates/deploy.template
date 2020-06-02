@@ -1,0 +1,10 @@
+############################################################
+## Application Parameters
+############################################################
+APP_NAME=${APP_NAME}
+APP_COST_CENTER=${APP_COST_CENTER}
+APP_ENV=${APP_ENV}
+EMAIL_RECIPIENTS=${EMAIL_RECIPIENTS}
+APP_CONFIG_PATH=${APP_CONFIG_PATH}
+AWS_PROFILE=${AWS_PROFILE}
+APP_SLACK_URI='${APP_SLACK_URI}'

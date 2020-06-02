@@ -1,0 +1,138 @@
+{% extends "report-html_base.j2" %}
+
+{% block content %}
+        {% if instances|length > 0 %}
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+                <div id="instance-summary"></div>
+                <script>
+                //Custom filter example
+                function customFilter(data){
+                    return data.car && data.rating < 3;
+                }
+
+                //Trigger setFilter function with correct parameters
+                function updateFilter(){
+
+                    var filter = $("#filter-field").val() == "function" ? customFilter : $("#filter-field").val();
+
+                    if($("#filter-field").val() == "function" ){
+                        $("#filter-type").prop("disabled", true);
+                        $("#filter-value").prop("disabled", true);
+                    }else{
+                        $("#filter-type").prop("disabled", false);
+                        $("#filter-value").prop("disabled", false);
+                    }
+
+                    table.setFilter(filter, $("#filter-type").val(), $("#filter-value").val());
+                }
+
+                //Update filters on value change
+                $("#filter-field, #filter-type").change(updateFilter);
+                $("#filter-value").keyup(updateFilter);
+
+                //Clear filters on "Clear Filters" button click
+                $("#filter-clear").click(function(){
+                    $("#filter-field").val("");
+                    $("#filter-type").val("=");
+                    $("#filter-value").val("");
+
+                    table.clearFilter());
+                });
+                    // Instance summary data
+                    var tablesummarydata = [{% for item in instancecounts.keys() %} 
+                        {name:"{{ item }}",count:"{{ instancecounts[item] }}",class:"{{item[0]}}-class"},{% endfor %}
+                    ];
+
+                    var mysummarytable = new Tabulator( "#instance-summary", {
+                        title:"Instance Summary",
+                        height:305,
+                        layout:"fitColumns",
+                        columnVertAlign:"bottom",
+                        pagination:"local",
+                        paginationSize:50,
+                        movableColumns:false,
+                        selectable:true,
+                        responsiveLayout:"collapse",
+                        clipboard:true,
+                        data:tablesummarydata,
+                        groupBy:["class"],
+                        groupStartOpen:[false],
+                        groupToggleElement:"header",
+                        columnCalcs:"top",
+                        columns:[
+                            {
+                                title:"Instance Summary",
+                                columns:[
+                                    {title:"Name", field:"name"},
+                                    {title:"Count", field:"count", topCalc:"sum", bottomCalc:"sum"},
+                                    {title:"Class", field:"class"},
+                                ],
+                            },
+                        ],
+                        initialSort:[
+                            {column:"class", dir:"asc"},
+                            {column:"count", dir:"desc"},
+                        ],
+                    });
+
+                    $("#instance-summary").tabulator();
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+            </td>
+        </tr>
+        <tr>
+            <td width="100%" align="Left" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; padding:10px; padding-right:0; font-weight: bold;">
+                <div id="instance-details"></div>
+                <script>
+                    // Instance data
+                    var tabledata = [{% for instance in instances %} 
+                        { {% for instance_prop in instances[0].keys() %}"{{ instance_prop }}":"{{ instance[instance_prop] }}",{% endfor %}},{% endfor %}
+                    ];
+
+                    var mytable = new Tabulator( "#instance-details", {
+                        title:"Intance Details",
+                        height:405,
+                        layout:"fitColumns",
+                        columnVertAlign:"bottom",
+                        pagination:"local",
+                        paginationSize:50,
+                        movableColumns:true,
+                        selectable:true,
+                        responsiveLayout:"collapse",
+                        clipboard:true,
+                        data:tabledata,
+                        groupBy:["cluster", "instance_type"],
+                        groupStartOpen:[true, false],
+                        groupToggleElement:"header",
+                        columns:[
+                            {
+                                title:"Instance Details",
+                                columns:[{% for instance_prop in instances[0].keys() %}
+                                    {% if instance_prop in view['column_lookup'].keys() %}
+                                    { title:"{{ view.column_lookup[instance_prop] }}", field:"{{ instance_prop }}",{% else %}
+                                    { title:"{{ instance_prop }}", field:"{{ instance_prop }}",{% endif %} headerFilter:"input", align:"center"
+                                    {% if instance_prop == 'launch_time' %},sorter:"date"{% endif %}},{% endfor %}
+                                ],
+                            }
+                        ]
+                    });
+                    $("#instance-details").tabulator();
+                </script>
+            </td>
+        </tr>
+        {% endif %}
+        <tr>
+            <td>
+                <br/>
+            </td>
+        </tr>
+        <tr>
+            <td align="left" valign="middle" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 14px; color: #353535; padding:3%; padding-top:10px; padding-bottom:10px;">
+                <br/><span style="font-weight:bold">Additional Information:</span> All filters are based on the assigned instance tags or similar metadata. The filters at the top represent filters against these tags and may not represent all instances if tags are inappropriately assigned within this target environment. {{ additionalnotes }}
+            </td>
+        </tr>
+{% endblock %}

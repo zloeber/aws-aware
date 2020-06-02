@@ -1,0 +1,40 @@
+# Monitor Configuration File for aws-aware
+view:
+  instance_tags: ['CostCenter', 'ApplicationName', 'Environment', 'ProcessName']
+  instance_state: ['running']
+filters:
+  appname: '' 
+  costcenter: ''
+  environment: ''
+
+monitors:
+  - name: i2.xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
+  - name: r3.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
+  - name: i3.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 5
+    enabled: true
+  - name: r3.2xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 15
+    enabled: true
+  - name: i3.xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 5
+    enabled: true
+  - name: d2.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 55
+    enabled: true

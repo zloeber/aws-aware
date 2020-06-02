@@ -1,0 +1,103 @@
+#!groovy
+
+pipeline {
+    agent {
+        label 'docker'
+    }
+
+    triggers {
+        pollSCM('*/5 * * * 1-5')
+    }
+
+    options {
+        skipDefaultCheckout(true)
+        buildDiscarder(logRotator(numToKeepStr: '2'))
+        // ansiColor('xterm')
+        timestamps()
+    }
+    stages {
+        stage('Notify') {
+            steps {
+                // send build started notifications
+                slackSend (color: '#FFFF00', message: "STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+            }
+        }
+        stage ("Code Checkout"){
+            steps{
+                checkout scm
+            }
+        }
+        stage('Docker:Python37') {
+            agent {
+                docker {
+                    image 'python:3.7-stretch'
+                    reuseNode true
+                }
+            }
+            steps {
+                // Now, all the stages for this node
+                script {
+                    stage('Docker:Setup') {
+                        // install any package requirements
+                        sh 'pip install --user -r requirements.txt'
+                        // twine for uploading to artifactory
+                        sh 'pip install --user twine'
+                        // some code coverage tools
+                        sh 'pip install --user coverage radon pylint'
+                    }
+                    stage('Docker:Code Coverage') {
+                        echo "Raw Metrics"
+                        echo "$PATH"
+                        sh '/root/.local/bin/radon raw --json aws_aware/ > raw_report.json'
+                        sh '/root/.local/bin/radon cc --json aws_aware/ > cc_report.json'
+                        sh '/root/.local/bin/radon mi --json aws_aware/ > mi_report.json'
+                        
+                        echo "Code Coverage"
+                        sh '/root/.local/bin/coverage run aws_aware/* 1 1 2 3'
+                        sh 'python -m coverage xml -o ./reports/coverage.xml'
+
+                        echo "PEP8 style check"
+                        sh '/root/.local/bin/pylint --disable=C aws_aware || true '
+                    }
+                    stage('Docker:Build') {
+                        sh 'python ./setup.py bdist_wheel'
+                        // sh 'python ./setup.py sdist'
+                    }
+                    stage('Docker:Artifactory') {
+                        sh 'echo "Would publish to $TWINE_REPOSITORY_URL but publishing to JFrog from a container does not seem to work currently. Uncomment this section to automate deployment when built from a prod Jenkins farm. For now manually upload the wheel file with the following commands:"'
+                        sh 'echo "twine upload dist/*.whl -r $TWINE_REPOSITORY_URL"'
+                        // sh '/root/.local/bin/twine upload dist/*whl'
+                    }
+                }
+            }
+            post {
+                success {
+                    archiveArtifacts allowEmptyArchive: false, artifacts: 'dist/*whl', fingerprint: true
+                }
+                always {
+                    step([$class: 'CoberturaPublisher',
+                        autoUpdateHealth: false,
+                        autoUpdateStability: false,
+                        coberturaReportFile: 'reports/coverage.xml',
+                        failNoReports: false,
+                        failUnhealthy: false,
+                        failUnstable: false,
+                        maxNumberOfBuilds: 10,
+                        onlyStable: false,
+                        sourceEncoding: 'ASCII',
+                        zoomCoverageChart: false])
+                }
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Build Succeeded!'
+            slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+        failure {
+            echo 'Build Failed!'
+            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        }
+    }
+}
