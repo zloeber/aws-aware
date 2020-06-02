@@ -12,6 +12,5 @@ view:
     public_ip_address: 'Public IP'
     private_ip_address: 'Private IP'
     name: 'Name'
-filters:
-  Environment: '*'
+filters: []
 monitors: []

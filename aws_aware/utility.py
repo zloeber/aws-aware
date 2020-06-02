@@ -226,11 +226,11 @@ class Utility(object):
         Update a yaml file with a new element value
         """
         self._add_log('Attempting to update {0} - {1} -> {2}'.format(filepath, element, value))
-        yamldata = yaml.safe_load(file(filepath, 'r'))
-
+        with open(filepath, 'r') as infile:
+            yamldata = yaml.safe_load(infile)
         yamldata[element] = value
-
-        yaml.safe_dump(yamldata, file(filepath, 'w'), encoding='utf-8', allow_unicode=True, default_flow_style=False)
+        with open(filepath, 'wb') as outfile:
+            yaml.safe_dump(yamldata, outfile, encoding='utf-8', allow_unicode=True, default_flow_style=False)
 
     def multikeysort(self, items, columns):
         """Sorts lists of dictionaries based on keys"""

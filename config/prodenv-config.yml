@@ -1,9 +1,7 @@
-appname: ''
 awsid: ''
 awsprofile: default
 awsregion: us-east-1
 awssecret: ''
-costcenter: ''
 datapath: /tmp/instance_data.yml
 emailexceptions: false
 emailexceptionsrecipient: ''
@@ -14,12 +12,12 @@ emailsmtpserverport: 25
 emailstatussender: AWS-Aware Bot
 emailstatussenderaddress: Aws-aware-bot@localhost
 emailtemplatepath: config/templates
-environment: 'prod'
 logfile: runtime.log
 logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
 loggingenabled: false
-loglevel: INFO
+loglevel: WARN
 logpath: logs/
+monitorconfig: ./config/prodenv-monitors.yml
 slack_notifications: false
 slack_webhooks: []
 suppressconsoleoutput: false

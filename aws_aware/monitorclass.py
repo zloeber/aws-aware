@@ -51,7 +51,7 @@ class Monitor(MutableMapping):
 
         # Use passed in parameters only in our allowed list,
         # if not available then set them to default values.
-        for key in self.monitor_attributes.iterkeys():
+        for key in self.monitor_attributes.keys():
             lowerkey = str(key).lower()
             allowedattribs[lowerkey] = kwargs.pop(key, self.monitor_attributes[key])
 
@@ -61,7 +61,7 @@ class Monitor(MutableMapping):
     # The next five methods are requirements of the ABC object.
     def __setitem__(self, key, value):
         # Only update items that are in our list of properties
-        if key in self.monitor_attributes.iterkeys():
+        if key in self.monitor_attributes.keys():
             self.__dict__[key] = value
 
     def __getitem__(self, key):
@@ -200,24 +200,24 @@ class MonitorTasks(object):
         """Returns evaluated arg name"""
         result = '*'
         if self.monargs:
-            if (self.monargs[argname]):
+            if argname in self.monargs:
                 result = str(self.runargs[argname])
         if self.filters:
-            if (self.filters[argname]):
+            if argname in self.filters:
                 result = str(self.filters[argname])
         return result
 
-    def costcenter(self):
-        """Returns evaluated cost center"""
-        return self.eval_filter('costcenter')
+    # def costcenter(self):
+    #     """Returns evaluated cost center"""
+    #     return self.eval_filter('costcenter')
 
-    def appname(self):
-        """Returns evaluated appname"""
-        return self.eval_filter('appname')
+    # def appname(self):
+    #     """Returns evaluated appname"""
+    #     return self.eval_filter('appname')
 
-    def environment(self):
-        """Returns evaluated environment"""
-        return self.eval_filter('environment')
+    # def environment(self):
+    #     """Returns evaluated environment"""
+    #     return self.eval_filter('environment')
 
     def filter_instance_by(self, key, val, instances):
         """Returns filtered list of instances based on key/value pairs"""
@@ -259,12 +259,12 @@ class MonitorTasks(object):
 
         if not self.view['column_lookup']:
             self.view['column_lookup'] = {
-                'CostCenter': 'Cost Center',
-                'ApplicationName': 'App Name',
-                'Environment': 'Env',
-                'ProcessName': 'Process Name',
-                'Cloudera-Director-Template-Name': 'CDH Role',
-                'aws:elasticmapreduce:instance-group-role': 'EMR Role',
+                # 'CostCenter': 'Cost Center',
+                # 'ApplicationName': 'App Name',
+                # 'Environment': 'Env',
+                # 'ProcessName': 'Process Name',
+                # 'Cloudera-Director-Template-Name': 'CDH Role',
+                # 'aws:elasticmapreduce:instance-group-role': 'EMR Role',
                 'launch_time': 'Launched',
                 'public_ip_address': 'Public IP',
                 'private_ip_address': 'Private IP',
@@ -329,9 +329,9 @@ class MonitorTasks(object):
                     "emailtitle": "AWS Aware Status: {0}".format(status),
                     "date": date.today().strftime('%m/%d/%Y'),
                     "monitors": self.monitorjobs,
-                    "costcenter": self.costcenter(),
-                    "environment": self.environment(),
-                    "appname": self.appname(),
+                    "costcenter": self.eval_filter('costcenter'),
+                    "environment": self.eval_filter('environment'),
+                    "appname": self.eval_filter('appname'),
                     "instances": self.get_instances(),
                     "allinstances": self.get_instances(filtered=True),
                     "view": self.view,
@@ -385,9 +385,9 @@ class MonitorTasks(object):
                     "emailtitle": "AWS Aware Status: {0}".format(status),
                     "date": date.today().strftime('%m/%d/%Y'),
                     "monitors": self.monitorjobs,
-                    "costcenter": self.costcenter(),
-                    "environment": self.environment(),
-                    "appname": self.appname(),
+                    "costcenter": self.eval_filter('costcenter'),
+                    "environment": self.eval_filter('environment'),
+                    "appname": self.eval_filter('appname'),
                     "instances": self.get_instances(),
                     "view": self.view,
                     "additionalnotes": 'Please review these thresholds and take appropriate action to reduce instance counts to the approved level. (Save, then open the attached report for further instance details grouped by the ProcessName tag)'
@@ -426,9 +426,9 @@ class MonitorTasks(object):
                 "date": date.today().strftime('%m/%d/%Y'),
                 "view": self.view,
                 "monitors": self.monitorjobs,
-                "costcenter": str(self.costcenter()),
-                "environment": str(self.environment()),
-                "appname": str(self.appname()),
+                "costcenter": self.eval_filter('costcenter'),
+                "environment": self.eval_filter('environment'),
+                "appname": self.eval_filter('appname'),
                 "instances": instances,
                 "instancecounts": instancecounts,
                 "additionalnotes": '(Includes running instances only.)'
@@ -444,17 +444,17 @@ class MonitorTasks(object):
                 "date": date.today().strftime('%m/%d/%Y'),
                 "view": self.view,
                 "monitors": self.monitorjobs,
-                "costcenter": self.costcenter(),
-                "environment": self.environment(),
-                "appname": self.appname(),
+                "costcenter": self.eval_filter('costcenter'),
+                "environment": self.eval_filter('environment'),
+                "appname": self.eval_filter('appname'),
                 "instances": None,
                 "additionalnotes": 'To view this report please save it locally then open in your browser. Only running instances are included. Clusters are sorted by name then instance type. Review all clusters to ensure they are aligned with your application requirements.'
             }
 
             emaildata['instances'] = self.get_instances(filtered=filteredinstances)
-            emaildata['costcenter'] = str(self.costcenter()[0])
-            emaildata['environment'] = str(self.environment()[0])
-            emaildata['appname'] = str(self.appname()[0])
+            emaildata['costcenter'] = self.eval_filter('costcenter')
+            emaildata['environment'] = self.eval_filter('environment')
+            emaildata['appname'] = self.eval_filter('appname')
 
             CFG.emailhandler.send_email_template(
                 jinjatemplate='email-html_instance_monitor',
@@ -536,7 +536,7 @@ class MonitorTasks(object):
 
     def awsinstancename_to_clustername(self, awsid=''):
         """ Convert aws ids into cluster names 
-            awsid='team1-prod-stb-331-0dc72cb9-67ec-4bfc-9af9-a6e1aa50adfb'
+            awsid='team1-prod-stb-331-some-other-text'
             clustername='team1-prod-stb-331'
         """
         if awsid:
@@ -557,12 +557,15 @@ class MonitorTasks(object):
                 raise monitorclassexception
             
             self.instances = self.allinstances
-            if self.environment() != '*':
-                self.instances = [i for i in self.instances if i['Environment'] == self.environment()]
-            if self.appname() != '*':
-                self.instances = [i for i in self.instances if i['ApplicationName'] == self.appname()]
-            if self.costcenter() != '*':
-                self.instances = [i for i in self.instances if i['CostCenter'] == self.costcenter()]
+            for filtername in self.filters.keys():
+                if self.eval_filter(filtername) != '*':
+                    results = [i for i in results if i[filtername] == self.eval_filter(filtername)]
+            # if self.eval_filter('environment') != '*':
+            #     self.instances = [i for i in self.instances if i['Environment'] == self.eval_filter('environment')]
+            # if self.eval_filter('appname') != '*':
+            #     self.instances = [i for i in self.instances if i['ApplicationName'] == self.eval_filter('appname')]
+            # if self.eval_filter('costcenter') != '*':
+            #     self.instances = [i for i in self.instances if i['CostCenter'] == self.eval_filter('costcenter')]
         else:
             self._add_log('Polling AWS for instance data')
             # Get aws going
@@ -577,27 +580,33 @@ class MonitorTasks(object):
             # Other filter definitions
             # Running instances
             otherfilters.append({'Name': 'instance-state-name', 'Values': self.view['instance_state']})
+            if len(self.filters) > 0:
+                for filtername in self.filters.keys():
+                    if self.eval_filter(filtername) != '*':
+                        self._add_log('Other Filter Added - {0}'.format(filtername))
+                        otherfilters.append({'Name': 'tag:{0}'.format(filtername), 'Values': [self.eval_filter(filtername)]})
 
-            # Particular cost center
-            tag_cc = str(self.costcenter())
-            self._add_log('Other Filter - CostCenter: {0}'.format(tag_cc))
-            otherfilters.append({'Name': 'tag:CostCenter', 'Values': [tag_cc]})
+            # # Particular cost center
+            # tag_cc = str(self.eval_filter('costcenter'))
+            # self._add_log('Other Filter - CostCenter: {0}'.format(tag_cc))
+            # otherfilters.append({'Name': 'tag:CostCenter', 'Values': [tag_cc]})
 
-            # ApplicationName
-            tag_app = str(self.appname())
-            self._add_log('Other Filter - ApplicationName: {0}'.format(tag_app))
-            otherfilters.append({'Name': 'tag:ApplicationName', 'Values': [tag_app]})
+            # # ApplicationName
+            # tag_app = str(self.eval_filter('appname'))
+            # self._add_log('Other Filter - ApplicationName: {0}'.format(tag_app))
+            # otherfilters.append({'Name': 'tag:ApplicationName', 'Values': [tag_app]})
 
-            # Environment
-            tag_env = str(self.environment())
-            self._add_log('Other Filter - Environment: {0}'.format(tag_env))
-            otherfilters.append({'Name': 'tag:Environment', 'Values': [tag_env]})
+            # # Environment
+            # tag_env = str(self.eval_filter('environment'))
+            # self._add_log('Other Filter - Environment: {0}'.format(tag_env))
+            # otherfilters.append({'Name': 'tag:Environment', 'Values': [tag_env]})
 
             self._add_log('Instance filters applied: {0}'.format(len(otherfilters)))
             # Basic instance dictionary list result with some additional tags.
             self.allinstances = self.aws.aws_instances_brief(
                 otherfilters=otherfilters, 
                 tags=self.view['instance_tags'])
+
             self._add_log('AWS instances found: {0}'.format(
                 len(self.allinstances)))
 
@@ -620,12 +629,16 @@ class MonitorTasks(object):
         if self.allinstances:
             results = self.allinstances
         if filtered:
-            if self.environment() != '*':
-                results = [i for i in results if i['Environment'] == self.environment()]
-            if self.appname() != '*':
-                results = [i for i in results if i['ApplicationName'] == self.appname()]
-            if self.costcenter() != '*':
-                results = [i for i in results if i['CostCenter'] == self.costcenter()]
+            for filtername in self.filters.keys():
+                if self.eval_filter(filtername) != '*':
+                    results = [i for i in results if i[filtername] == self.eval_filter(filtername)]
+
+            # if self.eval_filter('environment') != '*':
+            #     results = [i for i in results if i['Environment'] == self.eval_filter('environment')]
+            # if self.eval_filter('appname') != '*':
+            #     results = [i for i in results if i['ApplicationName'] == self.eval_filter('appname')]
+            # if self.eval_filter('costcenter') != '*':
+            #     results = [i for i in results if i['CostCenter'] == self.eval_filter('costcenter')]
         
         return results
 
@@ -636,10 +649,10 @@ class MonitorTasks(object):
                 if (monitor['name'] == 'Other'):
                     if self.includeundefined:
                         self._add_log('Getting undefined instance types')
-                        unknowns=self.get_unknown_instances()
+                        unknowns = self.get_unknown_instances()
                     else:
                         self._add_log('Skipping undefined instance types')
-                        unknowns=0
+                        unknowns = 0
                     monitor['count'] = unknowns
                 
                 self._add_log('Getting count for instance type: {0}'.format(monitor['name']))
@@ -725,7 +738,8 @@ class MonitorTasks(object):
         if filepath is None:
             filepath = os.path.join(os.getcwd(), 'instance-output.yml')
         self._add_log('Saving instance data to: {0}'.format(filepath))
-        yaml.dump(self.allinstances, file(filepath, 'wb'), encoding='utf-8', allow_unicode=True, default_flow_style=False)
+        with open(filepath, 'wb') as outfile:
+            yaml.safe_dump(self.allinstances, outfile, encoding='utf-8', allow_unicode=True, default_flow_style=False)
 
     def save_html_report(self, 
         filteredinstances=False, reportname='instance_details.html'):
@@ -746,9 +760,9 @@ class MonitorTasks(object):
             "title": "AWS Aware Status - {0}".format(status),
             "date": date.today().strftime('%m/%d/%Y'),
             "monitors": self.monitorjobs,
-            "costcenter": self.costcenter(),
-            "environment": self.environment(),
-            "appname": self.appname(),
+            "costcenter": self.eval_filter('costcenter'),
+            "environment": self.eval_filter('environment'),
+            "appname": self.eval_filter('appname'),
             "instances": instances,
             "instancecounts": instancecounts,
             "view": self.view,

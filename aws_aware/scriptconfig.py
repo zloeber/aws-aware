@@ -34,7 +34,7 @@ __all__ = [
 # Script globals
 SCRIPTPATH = os.path.abspath(os.path.split(__file__)[0])
 CONFIGPATH = os.getenv('CONFIGFILE', os.path.join(SCRIPTPATH, ('config' + os.sep + 'default-config.yml')))
-MONITORCONFIGPATH = os.getenv('MONITORCONFIGFILE', os.path.join(SCRIPTPATH, ('config' + os.sep + 'default-monitor.yml')))
+MONITORCONFIGPATH = os.getenv('MONITORCONFIGFILE', os.path.join(SCRIPTPATH, ('config' + os.sep + 'default-monitors.yml')))
 DATAPATH = os.getenv('DATAPATH', os.path.join(SCRIPTPATH, ('config' + os.sep + 'instance_data.yml')))
 
 # Common arguments for all run operations
@@ -52,9 +52,9 @@ RUNARGS = {
 }
 
 MONITORARGS = {
-    'environment': None,
-    'appname': None,
-    'costcenter': None,
+    # 'environment': None,
+    # 'appname': None,
+    # 'costcenter': None,
     'monitorconfig': MONITORCONFIGPATH,
     'includeundefined': False,
     'skipprobe': False,
@@ -73,6 +73,7 @@ DEFAULTAPPCONFIG = {
     'emailstatussender': 'AWS-Aware Bot',
     'emailstatussenderaddress': 'Aws-aware-bot@localhost',
     'emailtemplatepath': 'config{0}templates'.format(os.sep),
+    'monitorconfig': MONITORCONFIGPATH,
     'logfile': 'runtime.log',
     'logformat': '%(relativeCreated)6d %(threadName)s %(message)s',
     'loggingenabled': False,
@@ -131,7 +132,6 @@ class CustomConfig(figgypy.Config):
     def save(self):
         """Save config to a file"""
         self.save_to_file()
-
 
 class Settings(CustomConfig):
     """
@@ -285,6 +285,7 @@ class Settings(CustomConfig):
 try:
     #OUTPUT.info('Attempting to load global config from {0}'.format(CONFIGPATH), suppress=True)
     CFG = Settings(config_file=CONFIGPATH)
+    OUTPUT.suppress_console_output(suppress=CFG.values.get('suppressconsoleoutput'))
 except:
     raise Exception('Error loading script configuration file: {0}'.format(CONFIGPATH))
 

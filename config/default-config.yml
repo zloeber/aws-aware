@@ -4,7 +4,7 @@ awsprofile: ''
 awsregion: us-east-1
 awssecret: ''
 costcenter: ''
-datapath: /tmp/instance_data.yml
+datapath: instance_data.yml
 emailexceptions: false
 emailexceptionsrecipient: ''
 emailexceptionssender: ScriptException@locahost
@@ -20,7 +20,7 @@ logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
 loggingenabled: false
 loglevel: INFO
 logpath: logs/
-monitorconfig: config/default-monitors.yml
+monitorconfig: ./config/default-monitors.yml
 slack_notifications: false
 slack_webhooks: ''
 suppressconsoleoutput: false

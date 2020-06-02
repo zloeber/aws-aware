@@ -2,7 +2,7 @@ awsid: ''
 awsprofile: ''
 awsregion: us-east-1
 awssecret: ''
-datapath: /home/zloeber/Projects/Personal/aws-aware/aws_aware/config/instance_data.yml
+datapath: instance_data.yml
 emailexceptions: false
 emailexceptionsrecipient: ''
 emailexceptionssender: ScriptException@locahost

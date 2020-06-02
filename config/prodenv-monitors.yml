@@ -13,7 +13,7 @@ view:
     private_ip_address: 'Private IP'
     name: 'Name'
 filters:
-  Environment: 'Production'
+  Environment: 'prod' 
 monitors:
   - name: i2.xlarge
     thresholdtype: instance

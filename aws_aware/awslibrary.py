@@ -165,14 +165,19 @@ class AWSAPI(object):
         return results
         # return reservations.get('Reservations')
 
-    def aws_instances_brief(self, namefilter='*', otherfilters=None, attributes=['instance_type', 'private_ip_address', 'public_ip_address', 'launch_time'], tags=[]):
+    def aws_instances_brief(self, 
+                            namefilter='*', 
+                            otherfilters=None, 
+                            attributes=['instance_type', 'private_ip_address', 'public_ip_address', 'launch_time'], 
+                            tags=[]):
         """
         Same as aws_instances but at a much higher level 
         (using just boto3.resource instead of boto3.client)
         """
+        # filters = [{'Name': 'tag:Name',
+        #             'Values': [namefilter + '*']}]
         filters = [{'Name': 'tag:Name',
                     'Values': [namefilter + '*']}]
-
         # Add any additional filters
         if otherfilters:
             filters = filters + otherfilters

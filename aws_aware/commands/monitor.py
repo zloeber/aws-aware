@@ -2,16 +2,16 @@
 All monitor tasks for this project
 """
 #from __future__ import absolute_import
-import os
+#import os
 import click
-from aws_aware.scriptconfig import CFG, MONITORARGS, OUTPUT, SCRIPTPATH, UTIL
+from aws_aware.scriptconfig import CFG, MONITORARGS, OUTPUT, UTIL, MONITORCONFIGPATH
 from aws_aware.monitorclass import MonitorTasks
 
 @click.group(invoke_without_command=True)
-@click.option('-environment', '--environment', help='Application environment')
-@click.option('-costcenter', '--costcenter', help='Cost center')
-@click.option('-appname', '--appname', help='Application Name')
-@click.option('-monitorconfig', '--monitorconfig', default=SCRIPTPATH + os.sep + 'config' + os.sep + 'default-monitor.yml', help='Path to YAML monitor definition file.')
+# @click.option('-environment', '--environment', help='Application environment')
+# @click.option('-costcenter', '--costcenter', help='Cost center')
+# @click.option('-appname', '--appname', help='Application Name')
+@click.option('-monitorconfig', '--monitorconfig', default=CFG.values.get('monitoringconfig'), help='Path to YAML monitor definition file.')
 @click.option('-skipprobe', '--skipprobe', is_flag=True, default=False, help='Skips reaching out to AWS to probe for data and uses existing cached data instead.')
 @click.option('-includeundefined', '--includeundefined', is_flag=True, default=False, help='Instances not in your monitor set are are included and evaluated as zero threshold alerts')
 @click.option('-sendwarnings', '--sendwarnings', is_flag=True, default=False, help='Send notices if the warning threshold has been reached.')
