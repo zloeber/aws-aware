@@ -14,7 +14,7 @@ emailsmtpserverport: 25
 emailstatussender: AWS-Aware Bot
 emailstatussenderaddress: Aws-aware-bot@localhost
 emailtemplatepath: config/templates
-environment: ''
+environment: 'prod'
 logfile: runtime.log
 logformat: '%(relativeCreated)6d %(threadName)s %(message)s'
 loggingenabled: false

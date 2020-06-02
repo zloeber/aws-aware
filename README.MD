@@ -110,6 +110,7 @@ The script uses the Python click module for parsing CLI arguments. This makes it
 As such it is critical to be aware that using the context sensitive help within the cli itself is preferred to this documentation as it will always contain the most recent features and flags. All remaining documentation is for general reference and getting started.
 
 ## Configuration
+
 The first time aws-aware is run, it will create a global configuration file to use automatically within its own install location (usually $HOME/.local/bin). You can (and should) use an alternate script configuration file by passing it first as `-configfile` so that the global configuration is not bound to the default install path pip uses for the module. You can create a new default configuration file to use via the new sub-command.
 
 You can view your current configuration in any editor or via this command:
@@ -122,11 +123,70 @@ aws-aware -configfile awsaware-globalconfig.yml config show
 
 > **IMPORTANT** If this is your first time installing the application it would be wise to create a new global configuration file and working job directory within a secured location then commit the file to your repo (Config as code). This is almost mandatory if the app is installed and used in a shared environment.
 
-## Removing
-Easy Peasy:
+## Monitors
+
+By default, no instance monitoring is performed. In order to monitor on instance count you will need to define them declaratively in a monitoring config yaml file. Below is an example of `config/prodenv-monitors.yml` that one might use to monitor production instances of types 'i2.xlarge' and 'r3.4xlarge'.
+
+```yaml
+# Monitor Configuration File for aws-aware
+view:
+  instance_tags: ['ClusterName', 'Environment', 'Location', 'Name', 'OS', 'PatchDay', 'Purpose', 'Stack']
+  instance_state: ['running']
+  notice_columns: ['ClusterName', 'Environment', 'Name', 'Stack']
+  # Tags on the left get transposed to column headers on the right
+  column_lookup:
+    ClusterName: 'Cluster Name'
+    instance_type: 'Instance Type'
+    Environment: 'Env'
+    launch_time: 'Launched'
+    public_ip_address: 'Public IP'
+    private_ip_address: 'Private IP'
+    name: 'Name'
+filters:
+  Environment: 'Production'
+monitors:
+  - name: i2.xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
+  - name: r3.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
 ```
+## Uninstalling
+
+```bash
 pip uninstall aws-aware
 ```
+
+## Logging
+
+Logging is not enabled by default. If you need additional insight on what is going on for a job you will need to enable logging in the config/config.yml file. Relevant configuration settings are:
+
+```
+loggingenabled: false
+loglevel: "INFO"
+logpath: "logs/"
+logfile: "runtime.log"
+logformat: "%(relativeCreated)6d %(threadName)s %(message)s"
+```
+
+Simply set loggingenabled to true and run the script again to get log output in the logs/runtime.log file (for long running jobs `tail -f logs/runtime.log`). This will emit logs for AWS and other calls.
+
+## Email Notifications
+
+If warningnotice or alertnotice flags are sent to aws-aware and either thresholds have been reached for any monitor then an alert will be sent to any defined emailrecipients.
+
+### Slack Notifications
+
+**NOTE:** This is barely tested at all.
+
+Notifications can alternatively be sent to a Slack channel via a webhook. You can add a webhook for your channel [at the slack api site](https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack#set-up-incoming-webhooks)
+
+You can then add one or multiple hooks into your global configuration file in the slack_webhooks array. Then change slack_notifications to True. Once this has been done anytime a notification is triggered so too will each of the slack channels receive notifications.
 
 ### AWS SSO
 To use SSO based authentication you will need to ensure your existing credential file exists and has a dedicated profile to use. In this case, we will use the profile called 'saml' to maintain our session token information once authenticated via ADFS/SSO.
@@ -146,32 +206,6 @@ make sso-login
 This will call a python script that will use the passed env vars to attempt to perform sso authentication then update the local saml profile with token/session information within the profile. You can use the script within (aws-sso.py) stand-alone to update a local aws profile for SAML authentication (tested as working on Windows/Mac/Linux with Python 2.7 only).
 
 >**NOTE** Be careful to only specify dedicated profile names when using this script or you risk overwriting local ~/.aws/credentials information that other projects may depend upon. Default profile it will target is `saml`.
-
-## Logging
-
-Logging is not enabled by default. If you need additional insight on what is going on for a job you will need to enable logging in the config/config.yml file. Relevant configuration settings are:
-
-```
-loggingenabled: false
-loglevel: "INFO"
-logpath: "logs/"
-logfile: "runtime.log"
-logformat: "%(relativeCreated)6d %(threadName)s %(message)s"
-```
-
-Simply set loggingenabled to true and run the script again to get log output in the logs/runtime.log file (for long running jobs `tail -f logs/runtime.log`). This will emit logs for AWS and other calls.
-
-## Notifications
-
-If warningnotice or alertnotice flags are sent and either thresholds have been reached for any monitor then an alert will be sent to any defined emailrecipients.
-
-### Slack Notifications
-
-**NOTE:** This is barely tested at all.
-
-Notifications can alternatively be sent to a Slack channel via a webhook. You can add a webhook for your channel [at the slack api site](https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack#set-up-incoming-webhooks)
-
-You can then add one or multiple hooks into your global configuration file in the slack_webhooks array. Then change slack_notifications to True. Once this has been done anytime a notification is triggered so too will each of the slack channels receive notifications.
 
 ## CI Steps
 Some common CI steps for this project includes:

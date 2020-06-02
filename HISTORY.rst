@@ -12,3 +12,9 @@ History
 
 * Upgrade to Python 3.7
 * Tons of other updates
+
+0.2.0 (2020-06-02)
+------------------
+
+* Fixes for Python 3.7
+* Documentation updates

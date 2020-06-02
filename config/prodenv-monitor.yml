@@ -1,0 +1,47 @@
+# Monitor Configuration File for aws-aware
+view:
+  instance_tags: ['ClusterName', 'Environment', 'Location', 'Name', 'OS', 'PatchDay', 'Purpose', 'Stack']
+  instance_state: ['running']
+  notice_columns: ['ClusterName', 'Environment', 'Name', 'Stack']
+  # Tags on the left get transposed to column headers on the right
+  column_lookup:
+    ClusterName: 'Cluster Name'
+    instance_type: 'Instance Type'
+    Environment: 'Env'
+    launch_time: 'Launched'
+    public_ip_address: 'Public IP'
+    private_ip_address: 'Private IP'
+    name: 'Name'
+filters:
+  Environment: 'Production'
+monitors:
+  - name: i2.xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
+  - name: r3.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 1
+    enabled: true
+  - name: i3.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 5
+    enabled: true
+  - name: r3.2xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 15
+    enabled: true
+  - name: i3.xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 5
+    enabled: true
+  - name: d2.4xlarge
+    thresholdtype: instance
+    warningthreshold: 0
+    alertthreshold: 55
+    enabled: true

@@ -77,28 +77,30 @@ production (unless possibly in a virtualenv within a container).
 Initialization
 --------------
 
-Easy! Update deploy.env then run either of these commands (depending if
-you are using a custom .env file or not):
+Easy! Copy ``./config/deploy.env`` to ``./config/team1.env`` then
+initialize a new aws-aware configuration file:
 
 .. code:: bash
 
-   make dpl="team1-prod.env" run-app-config
+   make app/config/init dpl=./config/team1.env
 
 After running this you will end up with a configuration file that you
-defined that can then be used moving forward (is also able to be
-upgraded if the app upgrades).
+defined in ``./config/team1-config.yml`` as well as a
+``./config/team1-monitor.yml`` config. Both can then be used moving
+forward to generate alerts for team1 (these config files are also able
+to be upgraded if the app upgrades for any reason).
 
 You can then run other make tasks using the same configuration file:
 
 .. code:: bash
 
    # Run an instance debug export based on the previously created config file
-   make dpl="team1-prod.env" run-app-export
+   make app/config/show dpl=team1.env
 
 ..
 
    **NOTE:** aws-aware supports exporting configuration to self-updating
-   configuration as code!
+   configuration as code! ``make app/config/export dpl=team1.env``
 
 Upgrade
 -------
@@ -172,14 +174,92 @@ command:
    to your repo (Config as code). This is almost mandatory if the app is
    installed and used in a shared environment.
 
-Removing
+Monitors
 --------
 
-Easy Peasy:
+By default, no instance monitoring is performed. In order to monitor on
+instance count you will need to define them declaratively in a
+monitoring config yaml file. Below is an example of
+``config/prodenv-monitors.yml`` that one might use to monitor production
+instances of types ‘i2.xlarge’ and ‘r3.4xlarge’.
+
+.. code:: yaml
+
+   # Monitor Configuration File for aws-aware
+   view:
+     instance_tags: ['ClusterName', 'Environment', 'Location', 'Name', 'OS', 'PatchDay', 'Purpose', 'Stack']
+     instance_state: ['running']
+     notice_columns: ['ClusterName', 'Environment', 'Name', 'Stack']
+     # Tags on the left get transposed to column headers on the right
+     column_lookup:
+       ClusterName: 'Cluster Name'
+       instance_type: 'Instance Type'
+       Environment: 'Env'
+       launch_time: 'Launched'
+       public_ip_address: 'Public IP'
+       private_ip_address: 'Private IP'
+       name: 'Name'
+   filters:
+     Environment: 'Production'
+   monitors:
+     - name: i2.xlarge
+       thresholdtype: instance
+       warningthreshold: 0
+       alertthreshold: 1
+       enabled: true
+     - name: r3.4xlarge
+       thresholdtype: instance
+       warningthreshold: 0
+       alertthreshold: 1
+       enabled: true
+
+Uninstalling
+------------
+
+.. code:: bash
+
+   pip uninstall aws-aware
+
+Logging
+-------
+
+Logging is not enabled by default. If you need additional insight on
+what is going on for a job you will need to enable logging in the
+config/config.yml file. Relevant configuration settings are:
 
 ::
 
-   pip uninstall aws-aware
+   loggingenabled: false
+   loglevel: "INFO"
+   logpath: "logs/"
+   logfile: "runtime.log"
+   logformat: "%(relativeCreated)6d %(threadName)s %(message)s"
+
+Simply set loggingenabled to true and run the script again to get log
+output in the logs/runtime.log file (for long running jobs
+``tail -f logs/runtime.log``). This will emit logs for AWS and other
+calls.
+
+Email Notifications
+-------------------
+
+If warningnotice or alertnotice flags are sent to aws-aware and either
+thresholds have been reached for any monitor then an alert will be sent
+to any defined emailrecipients.
+
+Slack Notifications
+~~~~~~~~~~~~~~~~~~~
+
+**NOTE:** This is barely tested at all.
+
+Notifications can alternatively be sent to a Slack channel via a
+webhook. You can add a webhook for your channel `at the slack api
+site <https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack#set-up-incoming-webhooks>`__
+
+You can then add one or multiple hooks into your global configuration
+file in the slack_webhooks array. Then change slack_notifications to
+True. Once this has been done anytime a notification is triggered so too
+will each of the slack channels receive notifications.
 
 AWS SSO
 ~~~~~~~
@@ -214,47 +294,6 @@ SAML authentication (tested as working on Windows/Mac/Linux with Python
    using this script or you risk overwriting local ~/.aws/credentials
    information that other projects may depend upon. Default profile it
    will target is ``saml``.
-
-Logging
--------
-
-Logging is not enabled by default. If you need additional insight on
-what is going on for a job you will need to enable logging in the
-config/config.yml file. Relevant configuration settings are:
-
-::
-
-   loggingenabled: false
-   loglevel: "INFO"
-   logpath: "logs/"
-   logfile: "runtime.log"
-   logformat: "%(relativeCreated)6d %(threadName)s %(message)s"
-
-Simply set loggingenabled to true and run the script again to get log
-output in the logs/runtime.log file (for long running jobs
-``tail -f logs/runtime.log``). This will emit logs for AWS and other
-calls.
-
-Notifications
--------------
-
-If warningnotice or alertnotice flags are sent and either thresholds
-have been reached for any monitor then an alert will be sent to any
-defined emailrecipients.
-
-Slack Notifications
-~~~~~~~~~~~~~~~~~~~
-
-**NOTE:** This is barely tested at all.
-
-Notifications can alternatively be sent to a Slack channel via a
-webhook. You can add a webhook for your channel `at the slack api
-site <https://get.slack.help/hc/en-us/articles/115005265063-Incoming-WebHooks-for-Slack#set-up-incoming-webhooks>`__
-
-You can then add one or multiple hooks into your global configuration
-file in the slack_webhooks array. Then change slack_notifications to
-True. Once this has been done anytime a notification is triggered so too
-will each of the slack channels receive notifications.
 
 CI Steps
 --------
